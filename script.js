@@ -27,21 +27,60 @@ $(function () {
   // attribute of each time-block be used to conditionally add or remove the
   // past, present, and future classes? How can Day.js be used to get the
   // current hour in 24-hour time?
-  function applyTime () {
-    var currentTime = dayjs().format('HH');
+  function applyColor () {
+    // create variable to reference the current hour of the current day
+    var currentTime = dayjs().format('H');
     console.log('the current hour is: ' + currentTime);
-    console.log($('.main-container').children())
-    $('.main-container').children().each(function(i) {
-      console.log(i.value);
-    });
+    // create variable to reference all of the divs in the main section of the html
+    var hourDivs = $('.main-container').children('div');
+    
+    // var currentTime = 10
+    // create for loop and set i to 9
+    // conditional statement defined as i is less than 18 because our scheduler goes up to the 17th hour, so the loop will stop when i = 19
+    // add 1 to i every iteration
+    // hourDivs are targeted with i-9 to start at the index of zero
+    console.log('temporary current time ' + currentTime)
+    for (var i = 9; i < 18; i ++) {
+      console.log('index: ' + (i-9) + ' for time: ' + i)
+      if (currentTime == i) {
+        hourDivs.eq(i-9).addClass('present');
+      } else if (currentTime > i) {
+        hourDivs.eq(i-9).addClass('past');
+      } else {
+        hourDivs.eq(i-9).addClass('future');
+      }
+    }
   }
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
-  //
+  function displaySavedData () {
+    // returns an array of div elements
+    var hourDivs = $('.main-container').children('div');
+    console.log(hourDivs);
+    // iterate through each div element
+    hourDivs.each(function() {
+      // get each div element's id attribute
+      var eachDiv = $(this).attr('id')
+      console.log(eachDiv);
+      // get values saved in local storage using (this) id tag 
+      // plus the string ' text' to identify the key
+      var eachSavedData = localStorage.getItem(eachDiv + ' text')
+      console.log(eachSavedData);
+
+      var textareaEl = $(this).children('textarea')
+      textareaEl.text(eachSavedData);
+    })
+
+  }
   // TODO: Add code to display the current date in the header of the page.
+  function showDateTime () {
+    var currentDateTime = dayjs().format('dddd, MMMM D, YYYY')
+    $('#currentDay').text(currentDateTime);
+  }
 
-
-  applyTime();
-  $('.saveBtn').on('click', saveTxt)
+  showDateTime();
+  applyColor();
+  displaySavedData();
+  $('.saveBtn').on('click', saveTxt);
 });
